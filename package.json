@@ -1,0 +1,23 @@
+{
+  "name": "q.menem",
+  "version": "0.1.0",
+  "description": "Manage rejected promises",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "promises",
+    "q",
+    "reject"
+  ],
+  "author": "Pablo H. Codeiro",
+  "license": "WTFPL",
+  "dependencies": {
+    "q": "^1.4.1"
+  },
+  "devDependencies": {
+    "mocha": "^2.2.5",
+    "should": "^6.0.3"
+  }
+}
