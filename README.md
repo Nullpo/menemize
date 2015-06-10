@@ -1,11 +1,11 @@
 # menemize
 Manage rejected promises with Menemize!
 
-Nowadays this library is compatible only with Q promises.
+Nowadays this library is compatible only with Promises/A+ libraries..
 
 Currently you do this:
 
-```
+```javascript
 var promise = Q.fcall(function(){
       throw {
         "status": {
@@ -31,15 +31,15 @@ promise.catch(function(response){
 
 Now, with menemize, you can do this:
 
-```
+```javascript
 var promise = Q.fcall(function(){
-      throw {
-              "status": {
-                 "number": 404,
-                 "message": "FILE_NOT_FOUND"
-              }
-            }
-    });
+    throw {
+      "status": {
+         "number": 404,
+         "message": "FILE_NOT_FOUND"
+      }
+    }
+});
 
 menemize(promise, "status.number");
 
@@ -63,15 +63,15 @@ Also, you can do something like this:
 
 Now, with menemize, you can do this:
 
-```
+```javascript
 var promise = Q.fcall(function(){
-      throw {
-              "status": {
-                 "number": 404,
-                 "message": "FILE_NOT_FOUND"
-              }
-            }
-    });
+    throw {
+      "status": {
+         "number": 404,
+         "message": "FILE_NOT_FOUND"
+      }
+    }
+});
 
 menemize(promise, "status.number");
 
@@ -86,5 +86,40 @@ promise.catchOn({
       console.log("Oh no! There is something wrong with the server.");
    };
 });
+
+```
+
+And if you want to discriminate between object types:
+
+```javascript
+
+function Hammertime(){
+  this.time = Date.now;
+}
+
+
+// you can do:
+
+var promise = Q.fcall(function(){
+   throw new Date();
+});
+
+// or this
+
+var promise = Q.fcall(function(){
+   throw new Hammertime();
+});
+
+// and discriminate between object types!
+
+menemize(promise);
+
+promise.catchOn(Date, function(){
+      console.log("Its Date object!");
+});,
+
+promise.catchOn(Hammertime, function(){
+      console.log("It's Hammertime!");
+});,
 
 ```
