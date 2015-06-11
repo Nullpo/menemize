@@ -2,7 +2,8 @@
 
 Manage your rejected Promises/A+ without ifs ;).
 
-h3. If you have this promise:
+If you have this promise:
+-------------------------
 
 ```javascript
 var promise = new Promise(function (resolve, reject) {
@@ -15,7 +16,8 @@ var promise = new Promise(function (resolve, reject) {
 });
 ```javascript
 
-h3. You can transform this:
+You can transform this:
+-------------------------
 
 ```javascript
 
@@ -32,7 +34,8 @@ promise.catch(function(response){
 });
 ```
 
-h3. To this!
+To this!
+--------
 
 ```javascript
 
@@ -52,7 +55,8 @@ promise.catchOn(500, function(response){
 
 ```
 
-h3. Or to this!
+Or to this!
+-----------
 
 ```javascript
 
@@ -71,7 +75,8 @@ promise.catchOn({
 });
 ```
 
-h3. Also works with Q, and all the libraries that uses the Promises/A+ spec:
+Also works with Q, and all the libraries that uses the Promises/A+ spec:
+------------------------------------------------------------------------
 
 ```javascript
 var promise = Q.fcall(function(){
@@ -136,3 +141,9 @@ promise.catchOn(Hammertime, function(){
       console.log("Or.... It's Hammertime!");
 });,
 ```
+
+Why avoiding IFs in error handling is good?
+-------------------------------------------
+
+Because, if you transform your IFs in objects, you can avoid repeated code, using project prototypes, module pattern or ES6 classes! ;).
+
