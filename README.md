@@ -1,50 +1,92 @@
 # menemize
-Manage rejected promises with Menemize!
 
-Nowadays this library is compatible only with Promises/A+ libraries..
+Manage your rejected Promises/A+ without ifs ;).
 
-Currently you do this:
+h3. If you have this promise:
 
 ```javascript
-var promise = Q.fcall(function(){
-      throw {
-        "status": {
-           "number": 404,
-           "message": "FILE_NOT_FOUND"
-        }
-      }
-    });
+var promise = new Promise(function (resolve, reject) {
+  reject({
+    "error": {
+      "message": "Not found!",
+      "value": 404
+    }
+  });
+});
+```javascript
+
+h3. You can transform this:
+
+```javascript
 
 promise.catch(function(response){
     if(response){
-        if(response.status.number == 404){
+        if(response.error.value == 404){
             console.log("Oh no! The file doesn't exists")
-        } else if(response.status.number == 403){
+        } else if(response.error.value == 403){
             console.log("Hey! You don't have permissions to see this file");
-        } else if(response.status.number == 500){
+        } else if(response.error.value == 500){
             console.log("Oh no! There is something wrong with the server.");
         }
     }
 });
+```
+
+h3. To this!
+
+```javascript
+
+menemize(promise,"error.value");
+
+promise.catchOn(404, function(response){
+      console.log("Oh no! The file doesn't exists");
+});
+
+promise.catchOn(403, function(response){
+      console.log("Hey! You don't have permissions to see this file");
+});
+
+promise.catchOn(500, function(response){
+      console.log("Oh no! The file doesn't exists");
+});
 
 ```
 
-Now, with menemize, you can do this:
+h3. Or to this!
+
+```javascript
+
+menemize(promise,"error.value");
+
+promise.catchOn({
+   400: function(response){
+      console.log("Oh no! The file doesn't exists");
+   },
+   403: function(response){
+      console.log("Hey! You don't have permissions to see this file");
+   },
+   500: function(response){
+      console.log("Oh no! There is something wrong with the server.");
+   };
+});
+```
+
+h3. Also works with Q, and all the libraries that uses the Promises/A+ spec:
 
 ```javascript
 var promise = Q.fcall(function(){
-    throw {
-      "status": {
-         "number": 404,
-         "message": "FILE_NOT_FOUND"
-      }
+  throw {
+    "error": {
+      "message": "Not found!",
+      "value": 404
     }
+  };
 });
 
-menemize(promise, "status.number");
+menemize(promise,"error.value");
 
 promise.catchOn(400, function(){
-   console.log("Oh no! The file doesn't exists")
+   console.log("Oh no! The file doesn't exists");
 ));
 
 promise.catchOn(403, function(){
@@ -55,71 +97,42 @@ promise.catchOn(500, function(){
    console.log("Oh no! There is something wrong with the server.");
 ));
 
-```
+````
 
 So, you can divide the different catchs between different methods in different objects!
 
-Also, you can do something like this:
+You can discriminate by a number or a string:
 
-Now, with menemize, you can do this:
 
 ```javascript
-var promise = Q.fcall(function(){
-    throw {
-      "status": {
-         "number": 404,
-         "message": "FILE_NOT_FOUND"
-      }
-    }
+promise.catchOn(404, function(response){
+  console.log("Oh no! The file doesn't exists")
 });
 
-menemize(promise, "status.number");
-
-promise.catchOn({
-   400: function(){
-      console.log("Oh no! The file doesn't exists")
-   },
-   403: function(){
-      console.log("Hey! You don't have permissions to see this file");
-   },
-   500: function(){
-      console.log("Oh no! There is something wrong with the server.");
-   };
+promise.catchOn("ENOENT", function(response){
+  console.log("Oh no! The file doesn't exists")
 });
-
 ```
 
-And if you want to discriminate between object types:
+Or by an object type!
 
 ```javascript
 
 function Hammertime(){
-  this.time = Date.now;
+  ...
 }
 
-
-// you can do:
-
 var promise = Q.fcall(function(){
-   throw new Date();
+   throw new Hammertime(); // Or throw new Error()
 });
-
-// or this
-
-var promise = Q.fcall(function(){
-   throw new Hammertime();
-});
-
-// and discriminate between object types!
 
 menemize(promise);
 
-promise.catchOn(Date, function(){
-      console.log("Its Date object!");
+promise.catchOn(Error, function(){
+      console.log("Oh, it's an error!");
 });,
 
 promise.catchOn(Hammertime, function(){
-      console.log("It's Hammertime!");
+      console.log("Or.... It's Hammertime!");
 });,
-
 ```
