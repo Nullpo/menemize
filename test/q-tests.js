@@ -157,7 +157,7 @@ describe("Privatize all the Q promises!",function(){
           "value": 404
         }
       })
-    }, 300);
+    }, 200);
 
     menemize(promise, "error.value");
 

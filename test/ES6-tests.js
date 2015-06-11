@@ -72,7 +72,7 @@ describe("Privatize all the ES6 promises!",function(){
 
         setTimeout(function(){
           reject(err);
-        }, 300);
+        }, 200);
       });
 
       menemize(promise);
@@ -164,6 +164,39 @@ describe("Privatize all the ES6 promises!",function(){
 
       promise.catchOn(new ErrorHandler());
     });
+
+    it("catch with catchOn object (with inheritance), ", function (done) {
+      var promise = new Promise(function (resolve, reject) {
+        reject({
+          "error": {
+            "message": "Not found!",
+            "value": 404
+          },
+          'url': 'http://example.com'
+        });
+      });
+
+      var AbstractErrorHandler = {
+        i18n: {
+          "404": "The resource {resource} doesn't exists.",
+          "500": "The server had a problem."
+        },
+        transform: function(key){
+          return this.i18n[key].replace('{' + property + '}',value);
+        }
+      };
+
+      var fileErrorHandler = Object.create(AbstractErrorHandler);
+
+      fileErrorHandler[404] = function(error){
+        console.log(this.transform(404, "resource", error.url));
+        done();
+      };
+
+      menemize(promise, "error.value");
+
+      promise.catchOn(fileErrorHandler);
+    });
   });
 
   describe ("Reject promises by Type", function(){
@@ -182,7 +215,6 @@ describe("Privatize all the ES6 promises!",function(){
       });
 
       promise.catchOn(Date, function (error) {
-
         done();
       });
     });

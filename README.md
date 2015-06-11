@@ -147,5 +147,48 @@ promise.catchOn(Hammertime, function(){
 Why avoiding IFs in error handling is good?
 -------------------------------------------
 
-Because, if you transform your IFs in objects, you can avoid repeated code, using project prototypes, module pattern or ES6 classes! ;).
+Because, if you transform your IFs in objects, you can avoid repeated code, using project prototypes, module pattern or
+ES6 classes! ;).
 
+```javascript
+// Business error classes.
+var AbstractErrorHandler = {
+    i18n: {
+      "404": "The resource {resource} doesn't exists.",
+      "500": "The server had a problem."
+    },
+    transform: function(key){
+      return this.i18n[key].replace('{' + property + '}',value);
+    }
+};
+
+var fileErrorHandler = Object.create(AbstractErrorHandler);
+
+fileErrorHandler[404] = function(error){
+    console.log(this.transform(404, "resource", error.url)); //
+    done();
+};
+
+// Menemize lines
+
+
+menemize(promise, "error.value");
+
+promise.catchOn(fileErrorHandler);
+
+
+// And now... we reject the promise:
+
+var promise = new Promise(function (resolve, reject) {
+    reject({
+      "error": {
+        "message": "Not found!",
+        "value": 404
+      },
+      'url': 'http://example.com'
+    });
+});
+
+```
+
+And for any error, you can reuse AbstractErrorHandler in all your app ;)
