@@ -16,6 +16,7 @@ var promise = new Promise(function (resolve, reject) {
 });
 ```javascript
 
+
 You can transform this:
 -------------------------
 
@@ -33,6 +34,7 @@ promise.catch(function(response){
     }
 });
 ```
+
 
 To this!
 --------
