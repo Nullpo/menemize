@@ -12,12 +12,12 @@ var PrivatizedCatch = function(promise, keyToCheck){
     });
   };
 
-  this.onMap = function(map, callback){
+  this.onMapObject = function(map){
     promise.catch(function(error){
       if(error){
         var callback = map[searchProperty(error, keyToCheck)];
         if(callback){
-          return callback(error);
+          return callback.call(map, error);
         }
       }
     });
@@ -55,11 +55,10 @@ var Menemize = function(promise, keyToCheck){
     if((typeof property) == "string" || (typeof property) == "number" ){
       return privatized.onProperty(property, callback);
     } else if(!callback){
-      return privatized.onMap(property);
+      return privatized.onMapObject(property); //"Property" now is an object
     } else {
       return privatized.onType(property, callback);
     }
-
   };
 
   promise.failOn = function catchOn(property, callback){

@@ -1,4 +1,5 @@
 var menemize = require('../dist/menemize.js');
+var should    = require('should');
 
 describe("Privatize all the ES6 promises!",function(){
   describe ("Reject promises with strings/numbers", function() {
@@ -106,7 +107,7 @@ describe("Privatize all the ES6 promises!",function(){
     })
   });
 
-  describe ("Reject promises with key-value object", function() {
+  describe ("Reject promises with a object", function() {
     it("catch with catchOn object", function (done) {
       var promise = new Promise(function (resolve, reject) {
         reject({
@@ -131,6 +132,38 @@ describe("Privatize all the ES6 promises!",function(){
         }
       });
     });
+
+    it("catch with catchOn object, and preserve the 'this'", function (done) {
+      var promise = new Promise(function (resolve, reject) {
+        reject({
+          "error": {
+            "message": "Not found!",
+            "value": 404
+          }
+        });
+      });
+
+      var ErrorHandler = function(){
+        this.name = "ErrorHandler";
+
+        this[404] =  function (error) {
+          should(this).have.property("name","ErrorHandler");
+          done();
+        };
+
+        this[403] =  function (error) {
+          fail();
+        };
+
+        this[500] =  function (error) {
+          fail();
+        };
+      };
+
+      menemize(promise, "error.value");
+
+      promise.catchOn(new ErrorHandler());
+    });
   });
 
   describe ("Reject promises by Type", function(){
@@ -153,5 +186,5 @@ describe("Privatize all the ES6 promises!",function(){
         done();
       });
     });
-  })
+  });
 });
