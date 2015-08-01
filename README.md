@@ -14,7 +14,7 @@ var promise = new Promise(function (resolve, reject) {
     }
   });
 });
-```javascript
+```
 
 
 You can transform this:
@@ -106,7 +106,7 @@ promise.catchOn(500, function(){
 
 ````
 
-And so, you can divide the different catches between different methods in different objects!
+You can divide the different catches between different methods in different objects!
 
 You can discriminate by a number or a string:
 
